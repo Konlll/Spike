@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.table-settings{
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+button{
+    width: 150px;
+}
+
+#events{
+    display: none;
+}
+
+#table{
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+}
+
+.row{
+    display: flex;
+    gap: 10px;
+}
+
+.col{
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: aquamarine;
+}
+
+.spike{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #000;
+}
+
+.character{
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.table-data{
+    display: flex;
+    gap: 20px;
+}
