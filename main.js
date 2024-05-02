@@ -57,19 +57,18 @@ const addToWhiteBackList = (cell, type) => {
       continue;
     } else if (cells[currentCell].hasChildNodes()) {
       if (cells[currentCell].firstChild.classList.contains("character")) {
-        let currentId = cells[currentCell].firstChild.id.slice(10)
-        console.log(cells[currentCell].firstChild.id)
-        if(!!currentId){
-            whiteBackList[cells[currentCell].firstChild.id.slice(10)].add({
-                type,
-                className: cell.id
-            })
+        let currentId = cells[currentCell].firstChild.id.slice(10);
+        if (!!currentId) {
+          whiteBackList[cells[currentCell].firstChild.id.slice(10)].push({
+            type,
+            className: cell.id,
+          });
         }
       }
     }
   }
 
-  console.log(whiteBackList)
+  console.log(whiteBackList);
 };
 
 const getAvaliableCells = (currentRow, currentCol) => {
@@ -139,7 +138,13 @@ const start = () => {
         character.currentCol
       )
         .filter((cell) => cell !== null)
-        .filter((cell) => !cell.firstChild?.classList.contains("character"));
+        .filter((cell) => !cell.firstChild?.classList.contains("character"))
+        .filter(cell => !whiteBackList[character.id].some(listcell => listcell.type === "spike" && listcell.className === cell.id))
+
+        console.log(`${character.id}. mező:`)
+        console.log(availableCells)
+        console.log()
+
       document.querySelector(`#${character.className}`).innerHTML = "";
       if (availableCells.length !== 0) {
         const randomAvailableCell =
@@ -164,7 +169,7 @@ const start = () => {
             currentRow: randomAvailableCell.getAttribute("data-row"),
             currentCol: randomAvailableCell.getAttribute("data-col"),
           };
-          addToWhiteBackList(randomAvailableCell, "notSpike")
+          //addToWhiteBackList(randomAvailableCell, "notSpike");
         }
       } else {
         characters[index].state = "dead";
@@ -202,7 +207,7 @@ placeCharacterButton.addEventListener("click", () => {
       state: "alive",
     },
   ];
-  whiteBackList[`${numberOfCharacters}`] = new Set()
+  whiteBackList[`${numberOfCharacters}`] = [];
 });
 
 startButton.addEventListener("click", () => start());
