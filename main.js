@@ -46,7 +46,7 @@ const collectNeighborhoodCells = (currentRow, currentCol) => {
   return cells;
 };
 
-const addToWhiteBackList = (cell, type) => {
+const addToWhiteBlackList = (cell, type) => {
   const cellRow = cell.getAttribute("data-row");
   const cellCol = cell.getAttribute("data-col");
 
@@ -67,8 +67,20 @@ const addToWhiteBackList = (cell, type) => {
       }
     }
   }
+};
 
-  console.log(whiteBackList);
+const collectWhiteBlackList = (cell, currentCharacterId) => {
+  const cellRow = cell.getAttribute("data-row");
+  const cellCol = cell.getAttribute("data-col");
+  let cells = collectNeighborhoodCells(cellRow, cellCol);
+
+  for (let currentCell in cells) {
+    if (cells[currentCell] === null) {
+      continue;
+    } else {
+      // TODO
+    }
+  }
 };
 
 const getAvaliableCells = (currentRow, currentCol) => {
@@ -139,11 +151,13 @@ const start = () => {
       )
         .filter((cell) => cell !== null)
         .filter((cell) => !cell.firstChild?.classList.contains("character"))
-        .filter(cell => !whiteBackList[character.id].some(listcell => listcell.type === "spike" && listcell.className === cell.id))
-
-        console.log(`${character.id}. mező:`)
-        console.log(availableCells)
-        console.log()
+        .filter(
+          (cell) =>
+            !whiteBackList[character.id].some(
+              (listcell) =>
+                listcell.type === "spike" && listcell.className === cell.id
+            )
+        );
 
       document.querySelector(`#${character.className}`).innerHTML = "";
       if (availableCells.length !== 0) {
@@ -155,7 +169,7 @@ const start = () => {
             const li = document.createElement("li");
             li.innerHTML = `A(z) ${character.id}. bábú meghalt, mert aknába lépett.`;
             deathsUl.appendChild(li);
-            addToWhiteBackList(randomAvailableCell, "spike");
+            addToWhiteBlackList(randomAvailableCell, "spike");
           }
         } else {
           const div = document.createElement("div");
@@ -169,7 +183,7 @@ const start = () => {
             currentRow: randomAvailableCell.getAttribute("data-row"),
             currentCol: randomAvailableCell.getAttribute("data-col"),
           };
-          //addToWhiteBackList(randomAvailableCell, "notSpike");
+          //addToWhiteBlackList(randomAvailableCell, "notSpike");
         }
       } else {
         characters[index].state = "dead";
