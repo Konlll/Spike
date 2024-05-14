@@ -10,6 +10,21 @@ let tableCols = 0;
 let characters = [];
 let whiteBackList = {};
 
+const removeDuplicates = (array) => {
+  const uniqueObjects = {};
+  const uniqueArray = [];
+
+  array?.forEach(obj => {
+      const objKey = JSON.stringify(obj);
+      if (!uniqueObjects[objKey]) {
+          uniqueObjects[objKey] = true;
+          uniqueArray.push(obj);
+      }
+  });
+
+  return uniqueArray;
+}
+
 const collectNeighborhoodCells = (currentRow, currentCol) => {
   let cells = [];
   cells.push(
@@ -63,6 +78,7 @@ const addToWhiteBlackList = (cell, type) => {
             type,
             className: cell.id,
           });
+          whiteBackList[cells[currentCell]] = removeDuplicates(whiteBackList[cells[currentCell]])
         }
       }
     }
@@ -78,7 +94,19 @@ const collectWhiteBlackList = (cell, currentCharacterId) => {
     if (cells[currentCell] === null) {
       continue;
     } else {
-      // TODO
+      if(cells[currentCell].hasChildNodes()){
+        if(cells[currentCell].firstChild.classList.contains("character")){
+          whiteBackList[currentCharacterId].push(...whiteBackList[parseInt(cells[currentCell].firstChild.innerText)])
+          whiteBackList[parseInt(cells[currentCell].firstChild.innerText)].push(...whiteBackList[currentCharacterId])
+          whiteBackList[parseInt(cells[currentCell].firstChild.innerText)] = removeDuplicates(whiteBackList[parseInt(cells[currentCell].firstChild.innerText)])
+          whiteBackList[currentCharacterId] = removeDuplicates(whiteBackList[currentCharacterId])
+          // console.log(currentCharacterId + ". bábu blacklist-je a csere után:")
+          // console.log(whiteBackList[currentCharacterId])
+          // console.log(cells[currentCell].firstChild.innerText + ". bábu blacklist-je a csere után:")
+          // console.log(whiteBackList[parseInt(cells[currentCell].firstChild.innerText)])
+          // console.log()
+        }
+      }
     }
   }
 };
@@ -138,6 +166,7 @@ const placeSpikes = (numberOfSpikes) => {
 };
 
 const start = () => {
+  // console.clear()
   if (characters.length === 0) {
     alert("Legalább 1 bábút helyezzen fel!");
     return;
@@ -183,6 +212,7 @@ const start = () => {
             currentRow: randomAvailableCell.getAttribute("data-row"),
             currentCol: randomAvailableCell.getAttribute("data-col"),
           };
+          collectWhiteBlackList(randomAvailableCell, character.id);
           //addToWhiteBlackList(randomAvailableCell, "notSpike");
         }
       } else {
@@ -194,6 +224,12 @@ const start = () => {
     }
   });
 };
+
+const showCharacterInfo = (character) => {
+  let id = character.id.charAt(character.id.length - 1)
+  document.querySelector(".info").classList.add("shown")
+  document.querySelector("#character-number").innerText = id
+}
 
 generateButton.addEventListener("click", () => {
   events.style.display = "block";
@@ -210,6 +246,8 @@ placeCharacterButton.addEventListener("click", () => {
   div.classList.add("character");
   div.id = `character-${++numberOfCharacters}`;
   div.innerText = numberOfCharacters;
+  div.onmouseover = () => showCharacterInfo(div)
+  div.onmouseleave = () => document.querySelector(".info").classList.remove("shown")
   randomCell.appendChild(div);
   characters = [
     ...characters,
